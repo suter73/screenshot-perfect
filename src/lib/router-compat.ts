@@ -21,11 +21,9 @@ export function useLocation() {
 
 /** Mimics react-router-dom's useParams — returns route params from the deepest matched route. */
 export function useParams<T extends Record<string, string> = Record<string, string>>(): T {
-  return useRouterState({
-    select: (s) => {
-      const last = s.matches[s.matches.length - 1];
-      return (last?.params ?? {}) as T;
-    },
-  });
+  const matches = useRouterState({ select: (s) => s.matches });
+  const last = matches[matches.length - 1];
+  return ((last?.params ?? {}) as unknown) as T;
 }
+
 
