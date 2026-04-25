@@ -5,18 +5,17 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Heart, Stethoscope, Activity } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const { login } = useAuth();
-  const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!login(email, senha)) {
-      toast({ title: 'Erro', description: 'Credenciais inválidas', variant: 'destructive' });
+      toast.error('Credenciais inválidas');
     }
   };
 

@@ -1,16 +1,15 @@
 import { useState } from 'react';
 import { Upload, FileText, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 
 export default function UploadPage() {
   const [isDragging, setIsDragging] = useState(false);
   const [uploaded, setUploaded] = useState(false);
-  const { toast } = useToast();
 
   const handleUpload = () => {
     setUploaded(true);
-    toast({ title: 'Sucesso', description: 'Exame enviado para processamento. Os resultados estarão disponíveis em breve.' });
+    toast.success('Exame enviado para processamento. Os resultados estarão disponíveis em breve.');
   };
 
   return (
