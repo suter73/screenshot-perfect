@@ -9,38 +9,174 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UploadRouteImport } from './routes/upload'
+import { Route as PacientesRouteImport } from './routes/pacientes'
+import { Route as NotificacoesRouteImport } from './routes/notificacoes'
+import { Route as ExamesRouteImport } from './routes/exames'
+import { Route as EvolucaoRouteImport } from './routes/evolucao'
+import { Route as ConsultasRouteImport } from './routes/consultas'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PacientesIdRouteImport } from './routes/pacientes.$id'
 
+const UploadRoute = UploadRouteImport.update({
+  id: '/upload',
+  path: '/upload',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PacientesRoute = PacientesRouteImport.update({
+  id: '/pacientes',
+  path: '/pacientes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificacoesRoute = NotificacoesRouteImport.update({
+  id: '/notificacoes',
+  path: '/notificacoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExamesRoute = ExamesRouteImport.update({
+  id: '/exames',
+  path: '/exames',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EvolucaoRoute = EvolucaoRouteImport.update({
+  id: '/evolucao',
+  path: '/evolucao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConsultasRoute = ConsultasRouteImport.update({
+  id: '/consultas',
+  path: '/consultas',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PacientesIdRoute = PacientesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => PacientesRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/consultas': typeof ConsultasRoute
+  '/evolucao': typeof EvolucaoRoute
+  '/exames': typeof ExamesRoute
+  '/notificacoes': typeof NotificacoesRoute
+  '/pacientes': typeof PacientesRouteWithChildren
+  '/upload': typeof UploadRoute
+  '/pacientes/$id': typeof PacientesIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/consultas': typeof ConsultasRoute
+  '/evolucao': typeof EvolucaoRoute
+  '/exames': typeof ExamesRoute
+  '/notificacoes': typeof NotificacoesRoute
+  '/pacientes': typeof PacientesRouteWithChildren
+  '/upload': typeof UploadRoute
+  '/pacientes/$id': typeof PacientesIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/consultas': typeof ConsultasRoute
+  '/evolucao': typeof EvolucaoRoute
+  '/exames': typeof ExamesRoute
+  '/notificacoes': typeof NotificacoesRoute
+  '/pacientes': typeof PacientesRouteWithChildren
+  '/upload': typeof UploadRoute
+  '/pacientes/$id': typeof PacientesIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/consultas'
+    | '/evolucao'
+    | '/exames'
+    | '/notificacoes'
+    | '/pacientes'
+    | '/upload'
+    | '/pacientes/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/consultas'
+    | '/evolucao'
+    | '/exames'
+    | '/notificacoes'
+    | '/pacientes'
+    | '/upload'
+    | '/pacientes/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/consultas'
+    | '/evolucao'
+    | '/exames'
+    | '/notificacoes'
+    | '/pacientes'
+    | '/upload'
+    | '/pacientes/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ConsultasRoute: typeof ConsultasRoute
+  EvolucaoRoute: typeof EvolucaoRoute
+  ExamesRoute: typeof ExamesRoute
+  NotificacoesRoute: typeof NotificacoesRoute
+  PacientesRoute: typeof PacientesRouteWithChildren
+  UploadRoute: typeof UploadRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/upload': {
+      id: '/upload'
+      path: '/upload'
+      fullPath: '/upload'
+      preLoaderRoute: typeof UploadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pacientes': {
+      id: '/pacientes'
+      path: '/pacientes'
+      fullPath: '/pacientes'
+      preLoaderRoute: typeof PacientesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notificacoes': {
+      id: '/notificacoes'
+      path: '/notificacoes'
+      fullPath: '/notificacoes'
+      preLoaderRoute: typeof NotificacoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/exames': {
+      id: '/exames'
+      path: '/exames'
+      fullPath: '/exames'
+      preLoaderRoute: typeof ExamesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/evolucao': {
+      id: '/evolucao'
+      path: '/evolucao'
+      fullPath: '/evolucao'
+      preLoaderRoute: typeof EvolucaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/consultas': {
+      id: '/consultas'
+      path: '/consultas'
+      fullPath: '/consultas'
+      preLoaderRoute: typeof ConsultasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +184,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pacientes/$id': {
+      id: '/pacientes/$id'
+      path: '/$id'
+      fullPath: '/pacientes/$id'
+      preLoaderRoute: typeof PacientesIdRouteImport
+      parentRoute: typeof PacientesRoute
+    }
   }
 }
 
+interface PacientesRouteChildren {
+  PacientesIdRoute: typeof PacientesIdRoute
+}
+
+const PacientesRouteChildren: PacientesRouteChildren = {
+  PacientesIdRoute: PacientesIdRoute,
+}
+
+const PacientesRouteWithChildren = PacientesRoute._addFileChildren(
+  PacientesRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ConsultasRoute: ConsultasRoute,
+  EvolucaoRoute: EvolucaoRoute,
+  ExamesRoute: ExamesRoute,
+  NotificacoesRoute: NotificacoesRoute,
+  PacientesRoute: PacientesRouteWithChildren,
+  UploadRoute: UploadRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
