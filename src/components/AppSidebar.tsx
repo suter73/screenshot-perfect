@@ -1,5 +1,5 @@
 import { useAuth } from '@/contexts/AuthContext';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from '@/lib/router-compat';
 import {
   Activity, Users, FileText, Calendar, Bell, LogOut,
   LayoutDashboard, Upload, TrendingUp, User

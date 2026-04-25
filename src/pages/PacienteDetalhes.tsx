@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from '@/lib/router-compat';
 import { ArrowLeft, FileText, AlertTriangle, TrendingUp } from 'lucide-react';
 import StatusBadge from '@/components/StatusBadge';
 import ParametroChart from '@/components/ParametroChart';

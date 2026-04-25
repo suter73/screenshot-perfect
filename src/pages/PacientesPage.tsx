@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from '@/lib/router-compat';
 import { Search, ChevronRight, AlertTriangle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { pacientes, exames, getResultadosAlterados } from '@/data/mockData';
