@@ -6,11 +6,17 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Heart, Stethoscope, Activity } from 'lucide-react';
 import { toast } from 'sonner';
+import RegisterPage from './RegisterPage';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const [showRegister, setShowRegister] = useState(false);
   const { login } = useAuth();
+
+  if (showRegister) {
+    return <RegisterPage onBackToLogin={() => setShowRegister(false)} />;
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,7 +101,15 @@ export default function LoginPage() {
               </Button>
             </form>
 
-            <div className="mt-8 p-4 rounded-xl bg-muted/50 space-y-2">
+            <p className="mt-6 text-center text-sm text-muted-foreground">
+              Não tem uma conta?{' '}
+              <button onClick={() => setShowRegister(true)}
+                className="font-semibold text-primary hover:underline">
+                Cadastre-se
+              </button>
+            </p>
+
+            <div className="mt-6 p-4 rounded-xl bg-muted/50 space-y-2">
               <p className="text-xs font-medium text-muted-foreground mb-3">Contas de demonstração:</p>
               <button onClick={() => { setEmail('carlos@clinica.com'); setSenha('123'); }}
                 className="w-full text-left px-3 py-2 rounded-lg hover:bg-muted transition-colors text-sm">
