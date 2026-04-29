@@ -12,16 +12,20 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [showRegister, setShowRegister] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { login } = useAuth();
 
   if (showRegister) {
     return <RegisterPage onBackToLogin={() => setShowRegister(false)} />;
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!login(email, senha)) {
-      toast.error('Credenciais inválidas');
+    setLoading(true);
+    const res = await login(email, senha);
+    setLoading(false);
+    if (!res.ok) {
+      toast.error(res.error ?? 'Credenciais inválidas');
     }
   };
 
