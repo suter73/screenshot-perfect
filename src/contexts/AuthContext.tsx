@@ -78,6 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           nomeUsuario: nome,
           senhaUsuario: senha,
           emailUsuario: email,
+          tipoUsuario: tipo === 'paciente' ? 1 : 2,
         }),
       });
 
