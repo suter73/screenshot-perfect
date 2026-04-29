@@ -100,8 +100,8 @@ export default function LoginPage() {
                   required
                 />
               </div>
-              <Button type="submit" className="w-full h-12 rounded-lg gradient-primary text-primary-foreground font-semibold text-base">
-                Entrar
+              <Button type="submit" disabled={loading} className="w-full h-12 rounded-lg gradient-primary text-primary-foreground font-semibold text-base">
+                {loading ? 'Entrando...' : 'Entrar'}
               </Button>
             </form>
 
