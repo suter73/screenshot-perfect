@@ -19,7 +19,9 @@ export default function RegisterPage({ onBackToLogin }: Props) {
   const [tipo, setTipo] = useState<'paciente' | 'medico'>('paciente');
   const { register } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (nome.trim().length < 2) {
       toast.error('Informe seu nome completo');
@@ -33,7 +35,9 @@ export default function RegisterPage({ onBackToLogin }: Props) {
       toast.error('As senhas não conferem');
       return;
     }
-    const res = register({ nome: nome.trim(), email: email.trim(), senha, tipo });
+    setLoading(true);
+    const res = await register({ nome: nome.trim(), email: email.trim(), senha, tipo });
+    setLoading(false);
     if (!res.ok) {
       toast.error(res.error ?? 'Erro ao cadastrar');
       return;
