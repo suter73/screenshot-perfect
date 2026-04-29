@@ -152,8 +152,8 @@ export default function RegisterPage({ onBackToLogin }: Props) {
                   placeholder="••••••••" className="h-12 rounded-lg" required />
               </div>
 
-              <Button type="submit" className="w-full h-12 rounded-lg gradient-primary text-primary-foreground font-semibold text-base">
-                Criar conta
+              <Button type="submit" disabled={loading} className="w-full h-12 rounded-lg gradient-primary text-primary-foreground font-semibold text-base">
+                {loading ? 'Criando...' : 'Criar conta'}
               </Button>
             </form>
 
