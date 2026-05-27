@@ -112,20 +112,6 @@ export default function LoginPage() {
                 Cadastre-se
               </button>
             </p>
-
-            <div className="mt-6 p-4 rounded-xl bg-muted/50 space-y-2">
-              <p className="text-xs font-medium text-muted-foreground mb-3">Contas de demonstração:</p>
-              <button onClick={() => { setEmail('carlos@clinica.com'); setSenha('123'); }}
-                className="w-full text-left px-3 py-2 rounded-lg hover:bg-muted transition-colors text-sm">
-                <span className="font-medium text-foreground">Médico:</span>{' '}
-                <span className="text-muted-foreground">carlos@clinica.com</span>
-              </button>
-              <button onClick={() => { setEmail('maria@email.com'); setSenha('123'); }}
-                className="w-full text-left px-3 py-2 rounded-lg hover:bg-muted transition-colors text-sm">
-                <span className="font-medium text-foreground">Paciente:</span>{' '}
-                <span className="text-muted-foreground">maria@email.com</span>
-              </button>
-            </div>
           </CardContent>
         </Card>
       </div>

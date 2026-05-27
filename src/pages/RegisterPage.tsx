@@ -17,11 +17,23 @@ export default function RegisterPage({ onBackToLogin }: Props) {
   const [senha, setSenha] = useState('');
   const [confirmar, setConfirmar] = useState('');
   const [tipo, setTipo] = useState<'paciente' | 'medico'>('paciente');
+  const [cpf, setCpf] = useState('');
+  const [dataNascimento, setDataNascimento] = useState('');
+  const [crm, setCrm] = useState('');
+  const [especialidade, setEspecialidade] = useState('');
   const { register } = useAuth();
+
+  const formatCpf = (value: string) => {
+    const digits = value.replace(/\D/g, '').slice(0, 11);
+    return digits
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+  };
 
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (nome.trim().length < 2) {
       toast.error('Informe seu nome completo');
@@ -35,14 +47,44 @@ export default function RegisterPage({ onBackToLogin }: Props) {
       toast.error('As senhas não conferem');
       return;
     }
+    if (tipo === 'paciente') {
+      if (!cpf || cpf.replace(/\D/g, '').length !== 11) {
+        toast.error('Informe um CPF válido');
+        return;
+      }
+      if (!dataNascimento) {
+        toast.error('Informe a data de nascimento');
+        return;
+      }
+    }
+    if (tipo === 'medico') {
+      if (!crm.trim()) {
+        toast.error('Informe o CRM');
+        return;
+      }
+      if (!especialidade.trim()) {
+        toast.error('Informe a especialidade');
+        return;
+      }
+    }
     setLoading(true);
-    const res = await register({ nome: nome.trim(), email: email.trim(), senha, tipo });
+    const res = await register({
+      nome: nome.trim(),
+      email: email.trim(),
+      senha,
+      tipo,
+      cpf: tipo === 'paciente' ? cpf.replace(/\D/g, '') : undefined,
+      dataNascimento: tipo === 'paciente' ? dataNascimento : undefined,
+      crm: tipo === 'medico' ? crm.trim() : undefined,
+      especialidade: tipo === 'medico' ? especialidade.trim() : undefined,
+    });
     setLoading(false);
     if (!res.ok) {
       toast.error(res.error ?? 'Erro ao cadastrar');
       return;
     }
-    toast.success('Conta criada com sucesso!');
+    toast.success('Conta criada com sucesso! Faça login para continuar.');
+    onBackToLogin();
   };
 
   return (
@@ -151,6 +193,40 @@ export default function RegisterPage({ onBackToLogin }: Props) {
                   onChange={e => setConfirmar(e.target.value)}
                   placeholder="••••••••" className="h-12 rounded-lg" required />
               </div>
+
+              {tipo === 'paciente' && (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="cpf" className="text-sm font-medium">CPF</Label>
+                    <Input id="cpf" value={cpf}
+                      onChange={e => setCpf(formatCpf(e.target.value))}
+                      placeholder="000.000.000-00" className="h-12 rounded-lg" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="dataNascimento" className="text-sm font-medium">Data de nascimento</Label>
+                    <Input id="dataNascimento" type="date" value={dataNascimento}
+                      onChange={e => setDataNascimento(e.target.value)}
+                      className="h-12 rounded-lg" />
+                  </div>
+                </>
+              )}
+
+              {tipo === 'medico' && (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="crm" className="text-sm font-medium">CRM</Label>
+                    <Input id="crm" value={crm}
+                      onChange={e => setCrm(e.target.value)}
+                      placeholder="Ex: CRM/SP 123456" className="h-12 rounded-lg" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="especialidade" className="text-sm font-medium">Especialidade</Label>
+                    <Input id="especialidade" value={especialidade}
+                      onChange={e => setEspecialidade(e.target.value)}
+                      placeholder="Ex: Cardiologia" className="h-12 rounded-lg" />
+                  </div>
+                </>
+              )}
 
               <Button type="submit" disabled={loading} className="w-full h-12 rounded-lg gradient-primary text-primary-foreground font-semibold text-base">
                 {loading ? 'Criando...' : 'Criar conta'}

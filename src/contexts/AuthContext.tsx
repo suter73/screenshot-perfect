@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
-import { usuarios, Usuario } from '@/data/mockData';
+import { Usuario } from '@/data/mockData';
 
 const API_BASE_URL = 'http://localhost:8081';
 
@@ -8,6 +8,12 @@ interface RegisterData {
   email: string;
   senha: string;
   tipo: 'paciente' | 'medico';
+  // paciente
+  cpf?: string;
+  dataNascimento?: string;
+  // medico
+  crm?: string;
+  especialidade?: string;
 }
 
 interface AuthResult {
@@ -17,89 +23,87 @@ interface AuthResult {
 
 interface AuthContextType {
   user: Usuario | null;
-  login: (nomeUsuario: string, senhaUsuario: string) => Promise<AuthResult>;
+  login: (emailUsuario: string, senhaUsuario: string) => Promise<AuthResult>;
   register: (data: RegisterData) => Promise<AuthResult>;
   logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | null>(null);
-
-async function parseError(res: Response): Promise<string> {
-  try {
-    const data = await res.json();
-    return data?.message || data?.error || `Erro ${res.status}`;
-  } catch {
-    return `Erro ${res.status}`;
-  }
+interface LoginResponseData {
+  sucess: boolean;
+  errors: string[];
+  nomeUsuario?: string;
+  tipoUsuario?: number;
+  id?: number;
+  plano?: string;
 }
+
+const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<Usuario | null>(null);
 
-  const login = async (nomeUsuario: string, senhaUsuario: string): Promise<AuthResult> => {
+  const login = async (emailUsuario: string, senhaUsuario: string): Promise<AuthResult> => {
     try {
       const res = await fetch(`${API_BASE_URL}/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nomeUsuario, senhaUsuario }),
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ emailUsuario, senhaUsuario }),
       });
 
-      if (!res.ok) {
-        return { ok: false, error: await parseError(res) };
+      const data = (await res.json().catch(() => ({}))) as LoginResponseData;
+
+      if (!data.sucess) {
+        return { ok: false, error: data.errors?.[0] ?? "Email ou senha inválidos" };
       }
 
-      const data = await res.json().catch(() => ({} as any));
-
-      // Tenta mapear a resposta para Usuario; se falhar, usa fallback do mock por nome/email.
-      const fallback =
-        usuarios.find(u => u.email === nomeUsuario || u.nome === nomeUsuario) ?? usuarios[0];
-
-      const logged: Usuario = {
-        id: data?.id ?? fallback.id,
-        nome: data?.nome ?? data?.nomeUsuario ?? fallback.nome,
-        email: data?.email ?? data?.emailUsuario ?? fallback.email,
-        tipo: data?.tipo ?? fallback.tipo,
-        plano: data?.plano ?? fallback.plano,
-      };
-
-      setUser(logged);
+      setUser({
+        id: data.id ?? 0,
+        nome: data.nomeUsuario ?? "",
+        email: emailUsuario,
+        tipo: data.tipoUsuario === 2 ? "medico" : "paciente",
+        plano: data.plano ?? "basico",
+      });
       return { ok: true };
-    } catch (err) {
-      return { ok: false, error: 'Não foi possível conectar ao servidor (localhost:8081)' };
+    } catch {
+      return { ok: false, error: "Não foi possível conectar ao servidor (localhost:8081)" };
     }
   };
 
-  const register = async ({ nome, email, senha, tipo }: RegisterData): Promise<AuthResult> => {
+  const register = async ({
+    nome,
+    email,
+    senha,
+    tipo,
+    cpf,
+    dataNascimento,
+    crm,
+    especialidade,
+  }: RegisterData): Promise<AuthResult> => {
     try {
       const res = await fetch(`${API_BASE_URL}/login/cadastro`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           nomeUsuario: nome,
           senhaUsuario: senha,
           emailUsuario: email,
-          tipoUsuario: tipo === 'paciente' ? 1 : 2,
+          tipoUsuario: tipo === "paciente" ? 1 : 2,
+          cpfPaciente: cpf ?? "",
+          dataNascimentoPaciente: dataNascimento ?? null,
+          crmMedico: crm ?? "",
+          especialidadeMedico: especialidade ?? "",
         }),
       });
 
-      if (!res.ok) {
-        return { ok: false, error: await parseError(res) };
+      const data = (await res.json().catch(() => ({}))) as LoginResponseData;
+
+      if (!res.ok || !data.sucess) {
+        return { ok: false, error: data.errors?.[0] ?? `Erro ${res.status}` };
       }
 
-      const data = await res.json().catch(() => ({} as any));
-
-      const novo: Usuario = {
-        id: data?.id ?? Date.now(),
-        nome: data?.nome ?? data?.nomeUsuario ?? nome,
-        email: data?.email ?? data?.emailUsuario ?? email,
-        tipo: data?.tipo ?? tipo,
-        plano: data?.plano ?? 'basico',
-      };
-
-      setUser(novo);
       return { ok: true };
-    } catch (err) {
-      return { ok: false, error: 'Não foi possível conectar ao servidor (localhost:8081)' };
+    } catch {
+      return { ok: false, error: "Não foi possível conectar ao servidor (localhost:8081)" };
     }
   };
 
